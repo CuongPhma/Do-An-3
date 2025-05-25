@@ -1,4 +1,4 @@
-package com.example.do_an_3_app;
+package com.example.android;
 
 import android.os.Bundle;
 import android.util.Log;
