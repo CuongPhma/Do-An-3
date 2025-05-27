@@ -6,6 +6,27 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="24dp">
+    <EditText
+        android:id="@+id/etCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập tên thành phố (VD: Hanoi)"
+        android:inputType="textCapWords" />
+
+    <Button
+        android:id="@+id/btnGetWeather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lấy dự báo thời tiết"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kết quả sẽ hiển thị ở đây"
+        android:textSize="18sp"
+        android:paddingTop="24dp"/>
 
     <Switch
         android:id="@+id/switchLight"
