@@ -1,9 +1,12 @@
 package com.example.android;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -25,6 +28,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import java.util.Locale;
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivIcon;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+
+    /// /////////////////////////////
+    private DrawerLayout drawerLayout;
+    private ImageView iconMenu;
 
     private final String API_KEY = "b7fdd75b876a170618de039f8ea11be7"; // Thay bằng API key thật
 
@@ -42,7 +51,15 @@ public class MainActivity extends AppCompatActivity {
 
         tvResult = findViewById(R.id.tvWeather);
         ivIcon = findViewById(R.id.ivWeatherIcon);
-        
+        /// /////////////////////
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        iconMenu = findViewById(R.id.iconMenu);
+
+        iconMenu.setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START); // Mở drawer
+        });
+        /// //////////////////////////
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         checkLocationPermission();
