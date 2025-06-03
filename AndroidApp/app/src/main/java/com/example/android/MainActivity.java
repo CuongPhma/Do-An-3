@@ -12,6 +12,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(location -> {
                     if (location != null) {
-                        double lat = location.getLatitude();
+                        double lat =location.getLatitude();
+
+
                         double lon = location.getLongitude();
                         getWeatherByCoordinates(lat, lon);
                     } else {
@@ -118,14 +121,17 @@ public class MainActivity extends AppCompatActivity {
                     String iconCode = weatherResponse.getWeather().get(0).getIcon();
                     String iconUrl = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
 
+
                     // Cập nhật giao diện
                     TextView tvWeather = findViewById(R.id.tvWeather);
                     ImageView ivWeatherIcon = findViewById(R.id.ivWeatherIcon);
 
-                    tvWeather.setText(String.format(Locale.getDefault(), "%s\n%.1f°C", description,temp ));
+                    tvWeather.setText(String.format(Locale.getDefault(), "%s, %.1f°C", description,temp ));
                     Glide.with(MainActivity.this)
                             .load(iconUrl)
                             .into(ivWeatherIcon);
+                    Log.d("Weather", "lat=" + lat + ", lon=" + lon);
+
                 } else {
                     Toast.makeText(MainActivity.this, "Không lấy được dữ liệu thời tiết", Toast.LENGTH_SHORT).show();
                 }

@@ -19,7 +19,7 @@ public class WeatherResponse {
         return weather;
     }
 
-    public static class Main {
+    public class Main {
         @SerializedName("temp")
         private float temp;
 
@@ -28,12 +28,19 @@ public class WeatherResponse {
         }
     }
 
-    public static class Weather {
+    public class Weather {
+        @SerializedName("main")
+        private String main;
+
         @SerializedName("description")
         private String description;
 
         @SerializedName("icon")
         private String icon;
+
+        public String getMain() {
+            return main;
+        }
 
         public String getDescription() {
             return description;
