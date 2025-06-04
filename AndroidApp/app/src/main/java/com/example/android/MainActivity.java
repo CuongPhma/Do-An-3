@@ -31,11 +31,18 @@ import java.util.Locale;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvResult;
+    private TextView tvResult, tvDHT_Temp, tvDHT_Hum;
     private ImageView ivIcon;
+    DatabaseReference dhtRef;
+
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         tvResult = findViewById(R.id.tvWeather);
         ivIcon = findViewById(R.id.ivWeatherIcon);
+        tvDHT_Temp = findViewById(R.id.tvDHT_Temp);
+        tvDHT_Hum = findViewById(R.id.tvDHT_Hum);
         /// /////////////////////
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -62,7 +71,32 @@ public class MainActivity extends AppCompatActivity {
         });
         /// //////////////////////////
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // Trỏ tới nút "sensors" trong Firebase
+        dhtRef = FirebaseDatabase.getInstance().getReference("sensors");
+        // Đọc dữ liệu một lần hoặc lắng nghe thay đổi theo thời gian thực
+        dhtRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Đọc nhiệt độ
+                Double temp = snapshot.child("temperature").getValue(Double.class);
+                // Đọc độ ẩm
+                Double hum = snapshot.child("humidity").getValue(Double.class);
 
+                if (temp != null && hum != null) {
+                    tvDHT_Temp.setText(String.format("%.1f°c", temp));
+                    tvDHT_Hum.setText(String.format("%.1f%%", hum));
+                } else {
+                    tvDHT_Temp.setText("Không có dữ liệu");
+                    tvDHT_Hum.setText("Không có dữ liệu");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                tvDHT_Temp.setText("Lỗi đọc nhiệt độ");
+                tvDHT_Hum.setText("Lỗi đọc độ ẩm");
+            }
+        });
         checkLocationPermission();
     }
 
@@ -101,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> tvResult.setText("Lỗi lấy vị trí: " + e.getMessage()));
     }
-
 
     private void getWeatherByCoordinates(double lat, double lon) {
         String apiKey = "b7fdd75b876a170618de039f8ea11be7"; // Thay bằng API Key của bạn

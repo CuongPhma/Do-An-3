@@ -9,6 +9,68 @@
     android:gravity="center"
     android:padding="5dp">
 
+    <ImageView
+        android:id="@+id/Img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/japanese_house"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        app:layout_constraintTop_toTopOf="@id/Img"
+        app:layout_constraintBottom_toBottomOf="@id/Img"
+        app:layout_constraintStart_toStartOf="@id/Img"
+        app:layout_constraintEnd_toEndOf="@id/Img" />
+
+    <TextView
+        android:id="@+id/tvDHT_Temp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="104dp"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDHT_Hum"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginEnd="28dp"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDHT_Temp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.834"
+        app:layout_constraintStart_toEndOf="@+id/tvDHT_Temp"
+        app:layout_constraintTop_toTopOf="@+id/tvDHT_Temp"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhiệt độ"
+        app:layout_constraintStart_toStartOf="@+id/tvDHT_Temp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDHT_Temp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Độ ẩm"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/tvDHT_Hum"
+        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
@@ -44,7 +106,7 @@
                     android:layout_marginStart="16dp"
                     android:contentDescription="Menu icon"
                     android:src="@drawable/icons8_menu"
-                    app:tint="#303E5D" />
+                    app:tint="#FFFFFF" />
 
             </RelativeLayout>
 
@@ -69,7 +131,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="180dp"
-
+        android:outlineSpotShadowColor="@color/white"
         android:layout_marginTop="10dp"
         android:contentDescription="Biểu tượng thời tiết"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,6 +151,7 @@
         app:layout_constraintTop_toTopOf="@+id/ivWeatherIcon" />
 
     <TextView
+
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,9 +161,4 @@
         app:layout_constraintTop_toBottomOf="@+id/tvWeather" />
 
 
-    <!--    <Switch-->
-<!--        android:id="@+id/switchLight"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Đèn phòng" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
