@@ -5,20 +5,37 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <ESP32Servo.h>
+
+// ==== Servo Config ====
+Servo myservo;
+int servoPin = 27;
+int openPos = 90;
+int closePos = 0;
+
+void setupServo() {
+  myservo.setPeriodHertz(50);
+  myservo.attach(servoPin, 500, 2400);
+  myservo.write(closePos);
+}
+
+void openDoor() {
+  Serial.println("🔓 Mở cửa: Quay servo đến 90 độ");
+  myservo.write(openPos);
+  delay(3000);
+  Serial.println("🔒 Đóng cửa: Quay servo về 0 độ");
+  myservo.write(closePos);
+}
 
 // ==== DHT Config ====
-#define DHTPIN 5 // Chân kết nối DHT
+#define DHTPIN 5
 #define DHTTYPE DHT11
 DHT_Unified dht(DHTPIN, DHTTYPE);
-
 
 // ==== LED Config ====
 #define RED_PIN    32
 #define GREEN_PIN  25
 #define BLUE_PIN   26
-int red = 250;
-int green = 250;
-int blue = 250;
 
 // ==== RFID Config ====
 #define SS_PIN 21
@@ -40,19 +57,16 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
-// ==== Biến dùng để xử lý millis() thay thế scheduler ====
+// ==== millis() Control ====
 unsigned long previousMillisRFID = 0;
 unsigned long previousMillisDHT = 0;
-const unsigned long intervalRFID = 500;    // 1000ms quét RFID
-const unsigned long intervalDHT = 60000;    // 15000ms đọc DHT11
+const unsigned long intervalRFID = 500;
+const unsigned long intervalDHT = 60000;
 
-// ==== Prototype ====
-void dump_byte_array(byte *buffer, byte bufferSize);
+// ==== Function Prototypes ====
 void setColor(int r, int g, int b);
-void changeColor(int r, int g, int b);
 void RC522();
 void DHT_11();
-
 
 void setup() {
   Serial.begin(115200);
@@ -64,15 +78,13 @@ void setup() {
   }
   Serial.println("\n✅ WiFi đã kết nối!");
 
-
   config.api_key = API_KEY;
   config.database_url = DATABASE_URL;
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
-  Serial.println("Kết nối Firebase thành công ");
- 
+  Serial.println("Kết nối Firebase thành công");
 
   SPI.begin();
   rfid.PCD_Init();
@@ -83,89 +95,77 @@ void setup() {
   dht.temperature().getSensor(&sensor);
   dht.humidity().getSensor(&sensor);
 
-  pinMode(2, OUTPUT);
+  setupServo();
+
+  // Cấu hình LED RGB
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+  setColor(0, 0, 0); // Tắt đèn ban đầu
 }
 
-// ==== LOOP chính ====
 void loop() {
   unsigned long currentMillis = millis();
 
-  // Quét RFID mỗi 1000ms
   if (currentMillis - previousMillisRFID >= intervalRFID) {
     previousMillisRFID = currentMillis;
     RC522();
   }
 
-  //Đọc cảm biến DHT11 mỗi 15000ms
   if (currentMillis - previousMillisDHT >= intervalDHT) {
     previousMillisDHT = currentMillis;
     DHT_11();
   }
 
-
-  if (WiFi.status() != WL_CONNECTED) {
-  Serial.println("🚫 WiFi mất kết nối! Đang kết nối lại...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  
 }
 
-}
-
-// ==== Đổi màu RGB ====
-void changeColor(int r, int g, int b) {
-  ledcWrite(RED_PIN, r);
-  ledcWrite(GREEN_PIN, g);
-  ledcWrite(BLUE_PIN, b);
-  red -= 5;
-  green -= 5;
-  blue -= 5;
-  if (red < 0) red = 250;
-  if (green < 0) green = 250;
-  if (blue < 0) blue = 250;
-}
-
+// ==== Điều khiển LED bằng digitalWrite (RGB cơ bản) ====
 void setColor(int r, int g, int b) {
-  ledcWrite(RED_PIN, r);
-  ledcWrite(GREEN_PIN, g);
-  ledcWrite(BLUE_PIN, b);
+  digitalWrite(RED_PIN, r ? HIGH : LOW);
+  digitalWrite(GREEN_PIN, g ? HIGH : LOW);
+  digitalWrite(BLUE_PIN, b ? HIGH : LOW);
 }
 
-// ==== Quét thẻ RFID ====
+// ==== Quét RFID ====
 void RC522() {
-  if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial()) {
-    return;
-  }
+  if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial()) return;
 
-  Serial.print("📛 UID: ");
-  for (byte i = 0; i < rfid.uid.size; i++) {
-    Serial.print(rfid.uid.uidByte[i] < 0x10 ? "0" : "");
-    Serial.print(rfid.uid.uidByte[i], HEX);
-    Serial.print(" ");
-  }
-  // Gửi UID lên Firebase
   String uidString = "";
-  for(byte i = 0; i < rfid.uid.size; i++) {
+  for (byte i = 0; i < rfid.uid.size; i++) {
+    uidString += String(rfid.uid.uidByte[i] < 0x10 ? "0" : "");
     uidString += String(rfid.uid.uidByte[i], HEX);
   }
+  uidString.toUpperCase();
+  Serial.print("📛 UID: ");
+  Serial.println(uidString);
 
-  if (Firebase.RTDB.setString(&fbdo, "/rfid/uid", uidString)) {
-    Serial.println(F("✅ UID đã gửi lên Firebase thành công"));
+  String path = String("/rfid/") + uidString;
+  if (Firebase.RTDB.getBool(&fbdo, path)) {
+    if (fbdo.boolData()) {
+      Serial.println("✅ UID hợp lệ - Mở cửa");
+      setColor(0, 1, 0); // Xanh lá
+      openDoor();
+      setColor(0, 0, 0); // Tắt
+    } else {
+      Serial.println("🚫 UID không hợp lệ!");
+      setColor(1, 0, 0); // Đỏ
+      delay(2000); // Đợi 2 giây trước khi tắt đèn
+      setColor(0, 0, 0); // Tắt đèn
+    }
   } else {
-    Serial.print(F("❌ Lỗi gửi UID: "));
+    Serial.print("❌ Lỗi truy vấn UID: ");
     Serial.println(fbdo.errorReason());
+    setColor(1, 0, 0); // Đỏ
+    delay(2000); // Đợi 2 giây trước khi tắt đèn
+    setColor(0, 0, 0); // Tắt đèn
   }
-
-  // Thay đổi màu LED RGB
-  changeColor(red, green, blue);
-
-  
-  Serial.println();
 
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
-  
 }
 
-// ==== Đọc và gửi dữ liệu cảm biến DHT11 ====
+// ==== Đọc DHT11 ====
 void DHT_11() {
   sensors_event_t event;
 
@@ -187,7 +187,7 @@ void DHT_11() {
 
     if (Firebase.RTDB.setFloat(&fbdo, "/sensors/temperature", temperature) &&
         Firebase.RTDB.setFloat(&fbdo, "/sensors/humidity", humidity)) {
-        Serial.println(F("✅ Gửi dữ liệu lên Firebase thành công"));
+      Serial.println(F("✅ Gửi dữ liệu lên Firebase thành công"));
     } else {
       Serial.print(F("❌ Lỗi gửi dữ liệu DHT11: "));
       Serial.println(fbdo.errorReason());
