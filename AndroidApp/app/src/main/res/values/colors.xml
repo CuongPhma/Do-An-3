@@ -15,4 +15,16 @@
     <color name="gray">#808080</color>
     <color name="brown">#A52A2A</color>
 
+    <color name="fan_on_bg">#B2EBF2</color> <!-- xanh biển -->
+    <color name="door_on_bg">#A5D6A7</color> <!-- xanh lá -->
+    <color name="ac_on_bg">#81D4FA</color> <!-- xanh dương nhạt -->
+    <color name="tv_on_bg">#FFCC80</color> <!-- cam nhạt -->
+    <color name="sensor_on_bg">#CE93D8</color> <!-- tím nhạt -->
+
+    <color name="light_blue">#03A9F4</color>
+    <color name="purple">#9C27B0</color>
+    <color name="light_on_bg">#FFFFA726</color> <!-- nền khi bật -->
+    <color name="card_bg">#FF2C2C2C</color>      <!-- nền mặc định -->
+
+
 </resources>

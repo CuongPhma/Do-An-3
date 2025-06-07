@@ -3,17 +3,26 @@ package com.example.android;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,11 +49,21 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvResult, tvDHT_Temp, tvDHT_Hum;
+    LinearLayout btnLight, btnFan, btnDoor, btnAc, btnTV, btnSensor;
+
     private ImageView ivIcon;
     DatabaseReference dhtRef;
 
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+
+    // Biến trạng thái
+    boolean isLightOn = false;
+    boolean isFanOn = false;
+    boolean isDoorOn = false;
+    boolean isAcOn = false;
+    boolean isTvOn = false;
+    boolean isSensorOn = false;
 
     /// /////////////////////////////
     private DrawerLayout drawerLayout;
@@ -61,15 +80,281 @@ public class MainActivity extends AppCompatActivity {
         ivIcon = findViewById(R.id.ivWeatherIcon);
         tvDHT_Temp = findViewById(R.id.tvDHT_Temp);
         tvDHT_Hum = findViewById(R.id.tvDHT_Hum);
-        /// /////////////////////
-
+        btnLight = findViewById(R.id.btnLight);
+        btnFan = findViewById(R.id.btnFan);
+        btnDoor = findViewById(R.id.btnDoor);
+        btnAc = findViewById(R.id.btnAc);
+        btnTV = findViewById(R.id.btnTV);
+        btnSensor = findViewById(R.id.btnSensor);
         drawerLayout = findViewById(R.id.drawerLayout);
         iconMenu = findViewById(R.id.iconMenu);
 
         iconMenu.setOnClickListener(v -> {
             drawerLayout.openDrawer(GravityCompat.START); // Mở drawer
         });
-        /// //////////////////////////
+
+        // ---Xử lí nút nhấn ---
+        // --- LIGHT ---
+        CardView cvLight = findViewById(R.id.cvLight);
+        ImageView ivLight = findViewById(R.id.ivLight);
+
+        cvLight.setOnClickListener(v -> {
+            isLightOn = !isLightOn;
+
+            // Bắt đầu hiệu ứng fade
+            cvLight.animate()
+                    .alpha(0.5f)
+                    .setDuration(100)
+                    .withEndAction(() -> {
+                        // Sau khi fade 0.5, đổi màu rồi fade lại 1.0
+                        if (isLightOn) {
+                            ivLight.setColorFilter(ContextCompat.getColor(this, R.color.yellow), PorterDuff.Mode.SRC_IN);
+                            cvLight.setCardBackgroundColor(ContextCompat.getColor(this, R.color.light_on_bg));
+                        } else {
+                            ivLight.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                            cvLight.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                        }
+
+                        // Cập nhật lên Firebase
+                        FirebaseDatabase.getInstance().getReference()
+                                .child("Devices")
+                                .child("Light")
+                                .setValue(isLightOn);
+
+                        cvLight.animate()
+                                .alpha(1f)
+                                .setDuration(100)
+                                .start();
+                    })
+                    .start();
+        });
+
+
+        // --- FAN ---
+        CardView cvFan = findViewById(R.id.cvFan);
+        ImageView ivFan = findViewById(R.id.ivFan);
+
+        cvFan.setOnClickListener(v -> {
+            isFanOn = !isFanOn;
+            cvFan.animate()
+                    .alpha(0.5f)
+                    .setDuration(100)
+                    .withEndAction(() -> {
+                        if (isFanOn) {
+                            ivFan.setColorFilter(ContextCompat.getColor(this, R.color.xanh_than), PorterDuff.Mode.SRC_IN);
+                            cvFan.setCardBackgroundColor(ContextCompat.getColor(this, R.color.fan_on_bg));
+                } else {
+                    ivFan.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                    cvFan.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                }
+                        // Cập nhật lên Firebase
+                        FirebaseDatabase.getInstance().getReference()
+                                .child("Devices")
+                                .child("Fan")
+                                .setValue(isFanOn);
+                cvFan.animate()
+                        .alpha(1f)
+                        .setDuration(100)
+                        .start();
+            }).start();
+        });
+
+        // --- DOOR ---
+        CardView cvLock = findViewById(R.id.cvLock);
+        ImageView ivLock = findViewById(R.id.ivLock);
+
+        cvLock.setOnClickListener(v -> {
+            isDoorOn = !isDoorOn;
+            cvLock.animate().alpha(0.5f).setDuration(100).withEndAction(() -> {
+                if (isDoorOn) {
+                    ivLock.setColorFilter(ContextCompat.getColor(this, R.color.green), PorterDuff.Mode.SRC_IN);
+                    cvLock.setCardBackgroundColor(ContextCompat.getColor(this, R.color.door_on_bg));
+                } else {
+                    ivLock.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                    cvLock.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                }
+                // Cập nhật lên Firebase
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Devices")
+                        .child("Door")
+                        .setValue(isDoorOn);
+                cvLock.animate().alpha(1f).setDuration(100).start();
+            }).start();
+        });
+
+        // --- AC ---
+        CardView cvAir = findViewById(R.id.cvAir);
+        ImageView ivAir = findViewById(R.id.ivAir);
+
+        cvAir.setOnClickListener(v -> {
+            isAcOn = !isAcOn;
+            cvAir.animate().alpha(0.5f).setDuration(100).withEndAction(() -> {
+                if (isAcOn) {
+                    ivAir.setColorFilter(ContextCompat.getColor(this, R.color.light_blue), PorterDuff.Mode.SRC_IN);
+                    cvAir.setCardBackgroundColor(ContextCompat.getColor(this, R.color.ac_on_bg));
+                } else {
+                    ivAir.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                    cvAir.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                }
+                // Cập nhật lên Firebase
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Devices")
+                        .child("Ac")
+                        .setValue(isAcOn);
+                cvAir.animate().alpha(1f).setDuration(100).start();
+            }).start();
+        });
+
+        // --- TV ---
+        CardView cvTv = findViewById(R.id.cvTv);
+        ImageView ivTv = findViewById(R.id.ivTv);
+
+        cvTv.setOnClickListener(v -> {
+            isTvOn = !isTvOn;
+            cvTv.animate().alpha(0.5f).setDuration(100).withEndAction(() -> {
+                if (isTvOn) {
+                    ivTv.setColorFilter(ContextCompat.getColor(this, R.color.orange), PorterDuff.Mode.SRC_IN);
+                    cvTv.setCardBackgroundColor(ContextCompat.getColor(this, R.color.tv_on_bg));
+                } else {
+                    ivTv.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                    cvTv.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                }
+                // Cập nhật lên Firebase
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Devices")
+                        .child("TV")
+                        .setValue(isTvOn);
+                cvTv.animate().alpha(1f).setDuration(100).start();
+            }).start();
+        });
+
+        // --- SENSOR ---
+        CardView cvWifi = findViewById(R.id.cvWifi);
+        ImageView ivWifi = findViewById(R.id.ivWifi);
+
+        cvWifi.setOnClickListener(v -> {
+            isSensorOn = !isSensorOn;
+            cvWifi.animate().alpha(0.5f).setDuration(100).withEndAction(() -> {
+                if (isSensorOn) {
+                    ivWifi.setColorFilter(ContextCompat.getColor(this, R.color.purple), PorterDuff.Mode.SRC_IN);
+                    cvWifi.setCardBackgroundColor(ContextCompat.getColor(this, R.color.sensor_on_bg));
+                } else {
+                    ivWifi.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
+                    cvWifi.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
+                }
+                // Cập nhật lên Firebase
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Devices")
+                        .child("Sensors")
+                        .setValue(isSensorOn);
+                cvWifi.animate().alpha(1f).setDuration(100).start();
+            }).start();
+        });
+
+
+
+
+
+        // --- đồng bộ trạng thái nút nhấn với Firebase ---
+        // Light
+        DatabaseReference deviceRef = FirebaseDatabase.getInstance().getReference("Devices");
+        deviceRef.child("Light").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isLightOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvLight, ivLight, isLightOn,
+                            R.color.yellow, R.color.white,
+                            R.color.light_on_bg, R.color.card_bg);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        // Fan
+        deviceRef.child("Fan").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isFanOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvFan,ivFan,isFanOn,
+                            R.color.xanh_than, R.color.white,
+                            R.color.fan_on_bg, R.color.card_bg);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        // Door
+        deviceRef.child("Door").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isDoorOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvLock, ivLock, isDoorOn,
+                            R.color.green, R.color.white,
+                            R.color.door_on_bg, R.color.card_bg);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        // AC
+        deviceRef.child("Ac").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isAcOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvAir, ivAir, isAcOn,
+                            R.color.blue, R.color.white,
+                            R.color.ac_on_bg, R.color.card_bg);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        // TV
+        deviceRef.child("TV").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isTvOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvTv, ivTv, isTvOn,
+                            R.color.orange, R.color.white,
+                            R.color.tv_on_bg, R.color.card_bg);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        // Sensor
+        deviceRef.child("Sensors").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean isOn = snapshot.getValue(Boolean.class);
+                if (isOn != null) {
+                    isSensorOn = isOn;  // cập nhật biến trạng thái
+                    updateDeviceUI(cvWifi, ivWifi, isSensorOn,
+                            R.color.purple, R.color.white,
+                            R.color.sensor_on_bg, R.color.card_bg);
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         // Trỏ tới nút "sensors" trong Firebase
         dhtRef = FirebaseDatabase.getInstance().getReference("sensors");
@@ -98,6 +383,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         checkLocationPermission();
+    }
+
+
+
+    private void updateDeviceUI(CardView cardView, ImageView imageView, boolean isOn,int colorIconOn, int colorIconOff,int colorBgOn, int colorBgOff) {
+        cardView.animate().alpha(0.5f).setDuration(100).withEndAction(() -> {
+            if (isOn) {
+                imageView.setColorFilter(ContextCompat.getColor(this, colorIconOn), PorterDuff.Mode.SRC_IN);
+                cardView.setCardBackgroundColor(ContextCompat.getColor(this, colorBgOn));
+            } else {
+                imageView.setColorFilter(ContextCompat.getColor(this, colorIconOff), PorterDuff.Mode.SRC_IN);
+                cardView.setCardBackgroundColor(ContextCompat.getColor(this, colorBgOff));
+            }
+            cardView.animate().alpha(1f).setDuration(100).start();
+        }).start();
     }
 
     private void checkLocationPermission() {
