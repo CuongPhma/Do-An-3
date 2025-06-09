@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#21293C"
+    >
+
+    <ImageView
+        android:id="@+id/Img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/top_bg"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        app:layout_constraintTop_toTopOf="@id/Img"
+        app:layout_constraintBottom_toBottomOf="@id/Img"
+        app:layout_constraintStart_toStartOf="@id/Img"
+        app:layout_constraintEnd_toEndOf="@id/Img" />
+
+    <TextView
+        android:id="@+id/tvDHT_Temp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="104dp"
+        android:textSize="40sp"
+        android:text="Temp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDHT_Hum"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginEnd="28dp"
+        android:textSize="40sp"
+        android:text="Hum"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDHT_Temp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.834"
+        app:layout_constraintStart_toEndOf="@+id/tvDHT_Temp"
+        app:layout_constraintTop_toTopOf="@+id/tvDHT_Temp"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhiệt độ"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/tvDHT_Temp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDHT_Temp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Độ ẩm"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/tvDHT_Hum"
+        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <ImageView
+        android:id="@+id/ivWeatherIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="180dp"
+        android:outlineSpotShadowColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:contentDescription="Biểu tượng thời tiết"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="Description"
+        android:textSize="10sp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.113"
+        app:layout_constraintStart_toEndOf="@+id/ivWeatherIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivWeatherIcon" />
+
+    <TextView
+
+        android:id="@+id/tvLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mỹ Hào, Hưng Yên"
+        android:textSize="10sp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/tvWeather"
+        app:layout_constraintTop_toBottomOf="@+id/tvWeather" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="@+id/drawerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Img"
+        app:layout_constraintVertical_bias="0.0">
+
+        <GridLayout
+            android:id="@+id/gridControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignMargins"
+            android:columnCount="3"
+            android:padding="16dp"
+            android:rowCount="2"
+            android:rowOrderPreserved="false"
+            android:useDefaultMargins="true">
+
+            <!-- Nút Đèn -->
+            <LinearLayout
+                android:id="@+id/btnLight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvLight"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivLight"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_circle_white"
+                        android:contentDescription="Light Icon"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_light" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Đèn"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Nút Quạt -->
+            <LinearLayout
+                android:id="@+id/btnFan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvFan"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivFan"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Fan Icon"
+                        android:src="@drawable/ic_fan" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Quạt"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Nút Cửa -->
+            <LinearLayout
+                android:id="@+id/btnDoor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvLock"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivLock"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Door Icon"
+                        android:src="@drawable/ic_door" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Cửa"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Nút Điều hòa -->
+            <LinearLayout
+                android:id="@+id/btnAc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvAir"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivAir"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="AC Icon"
+                        android:padding="1dp"
+                        android:src="@drawable/ic_ac" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Điều hòa"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Nút TV -->
+            <LinearLayout
+                android:id="@+id/btnTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvTv"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivTv"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="TV Icon"
+                        android:src="@drawable/ic_tv" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:text="TV"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Nút Cảm biến -->
+            <LinearLayout
+                android:id="@+id/btnSensor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvWifi"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:outlineAmbientShadowColor="@color/white"
+                    android:outlineSpotShadowColor="@color/white"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivWifi"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Sensor Icon"
+                        android:src="@drawable/ic_sensor" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Cảm biến"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </GridLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Nội dung chính -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Toolbar đơn giản -->
+
+            <!-- Nội dung -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:color/transparent">
+
+                <!-- Icon menu tùy chỉnh -->
+                <ImageView
+                    android:id="@+id/iconMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:contentDescription="Menu icon"
+                    android:src="@drawable/icons8_menu"
+                    app:tint="#FFFFFF" />
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/main_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <!-- Menu trượt -->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigationView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:menu="@menu/drawer_menu" />
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

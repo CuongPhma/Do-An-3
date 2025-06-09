@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_home" android:title="Trang chủ" android:icon="@drawable/icon_home" />
+    <item android:id="@+id/nav_rfid" android:title="Danh sách thẻ RFID" android:icon="@drawable/icons8_menu" />
+    <item android:id="@+id/nav_settings" android:title="Thêm thẻ RFID" android:icon="@drawable/icon_add" />
+<!--    <item android:id="@+id/nav_logout" android:title="Đăng xuất"  android:icon="@drawable/icons8_logout"/>-->
+</menu>

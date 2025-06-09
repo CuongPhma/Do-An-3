@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "656283749225",
+    "firebase_url": "https://do-an-3-9959f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "do-an-3-9959f",
+    "storage_bucket": "do-an-3-9959f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656283749225:android:9c14eff50c49ec612dcbf8",
+        "android_client_info": {
+          "package_name": "com.example.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc3SKMJKBHq2Q3_NONXaZRroQhpHbtBD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
