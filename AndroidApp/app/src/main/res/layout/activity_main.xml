@@ -411,14 +411,14 @@
                                     android:layout_height="48dp"
                                     android:layout_gravity="center"
                                     android:contentDescription="Sensor Icon"
-                                    android:src="@drawable/ic_sensor" />
+                                    android:src="@drawable/ic_nightmode" />
                             </androidx.cardview.widget.CardView>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="48dp"
                                 android:layout_marginTop="4dp"
-                                android:text="Cảm biến"
+                                android:text="BAN ĐÊM"
                                 android:textAlignment="center"
                                 android:textAllCaps="true"
                                 android:textColor="@color/white"

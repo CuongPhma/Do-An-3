@@ -287,16 +287,15 @@ public class MainActivity extends AppCompatActivity {
                 if (isSensorOn) {
                     ivWifi.setColorFilter(ContextCompat.getColor(this, R.color.purple), PorterDuff.Mode.SRC_IN);
                     cvWifi.setCardBackgroundColor(ContextCompat.getColor(this, R.color.sensor_on_bg));
-                    Toast.makeText(MainActivity.this, "Sensor đã bật", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Chế độ ban đêm đã bật", Toast.LENGTH_SHORT).show();
                 } else {
                     ivWifi.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN);
                     cvWifi.setCardBackgroundColor(ContextCompat.getColor(this, R.color.card_bg));
-                    Toast.makeText(MainActivity.this, "Sensor đã tắt", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Chế độ ban đêm đã tắt", Toast.LENGTH_SHORT).show();
                 }
                 // Cập nhật lên Firebase
                 FirebaseDatabase.getInstance().getReference()
-                        .child("Devices")
-                        .child("Sensors")
+                        .child("night_mode")
                         .setValue(isSensorOn);
                 cvWifi.animate().alpha(1f).setDuration(100).start();
             }).start();
@@ -389,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Sensor
-        deviceRef.child("Sensors").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("night_mode").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Boolean isOn = snapshot.getValue(Boolean.class);
